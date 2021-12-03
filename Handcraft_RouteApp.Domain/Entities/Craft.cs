@@ -7,12 +7,17 @@ namespace Handcraft_RouteApp.Domain.Entities
 {
     public partial class Craft
     {
-        public int Id { get; set; }
+        public Craft()
+        {
+           // Materials = new HashSet<Material>();
+        }
+
+        public int IdCraft { get; set; }
         public string NameCraft { get; set; }
         public string Description { get; set; }
         public string Image { get; set; }
-        public int Material { get; set; }
 
-        public virtual Material MaterialNavigation { get; set; }
+        //public virtual ICollection<Material> Materials { get; set; }
+        public virtual Material Material{get; set; }
     }
 }

@@ -1,8 +1,8 @@
-﻿//cSpell:disable
-using System;    
+﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Handcraft_RouteApp.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata;
+
 
 #nullable disable
 
@@ -29,7 +29,6 @@ namespace Handcraft_RouteApp.Infrastructure.Data
         public virtual DbSet<GeoLocation> GeoLocations { get; set; }
         public virtual DbSet<Login> Logins { get; set; }
         public virtual DbSet<Material> Materials { get; set; }
-        public virtual DbSet<Municipality> Municipalities { get; set; }
         public virtual DbSet<Rol> Rols { get; set; }
         public virtual DbSet<SocialNetwork> SocialNetworks { get; set; }
         public virtual DbSet<User> Users { get; set; }
@@ -54,7 +53,7 @@ namespace Handcraft_RouteApp.Infrastructure.Data
 
                 entity.ToTable("Address");
 
-                entity.Property(e => e.City)
+                entity.Property(e => e.Municipality)
                     .IsRequired()
                     .HasMaxLength(250)
                     .IsUnicode(false);
@@ -73,11 +72,10 @@ namespace Handcraft_RouteApp.Infrastructure.Data
                     .IsUnicode(false);
 
                 entity.HasOne(d => d.IdCraftmanNavigation)
-                    //.WithMany(p => p.Address)
+                    //.WithMany(p => p.Addresses)
                     //.HasForeignKey(d => d.IdCraftman)
                     .WithOne(p => p.Address)
                     .HasForeignKey<Address>(d => d.IdCraftman)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Address_Craftman");
             });
 
@@ -125,64 +123,76 @@ namespace Handcraft_RouteApp.Infrastructure.Data
 
             modelBuilder.Entity<Craft>(entity =>
             {
+                entity.HasKey(e => e.IdCraft)
+                    .HasName("PK_Id_Craft");
+
                 entity.ToTable("Craft");
 
+                entity.Property(e => e.IdCraft).HasColumnName("Id_Craft");
+
                 entity.Property(e => e.Description)
+                    .IsRequired()
                     .HasMaxLength(500)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Image)
+                    .IsRequired()
                     .HasMaxLength(300)
                     .IsUnicode(false);
 
                 entity.Property(e => e.NameCraft)
-                    .HasMaxLength(100)
+                    .IsRequired()
+                    .HasMaxLength(300)
                     .IsUnicode(false)
                     .HasColumnName("Name_craft");
-
-                entity.HasOne(d => d.MaterialNavigation)
-                    .WithMany(p => p.Crafts)
-                    .HasForeignKey(d => d.Material)
-                    .HasConstraintName("Fk_Material");
             });
 
             modelBuilder.Entity<CraftTour>(entity =>
             {
+                entity.HasKey(e => e.IdCraftTour)
+                    .HasName("PK_Id_CraftTour");
+
                 entity.ToTable("CraftTour");
 
+                entity.Property(e => e.IdCraftTour).HasColumnName("Id_CraftTour");
+
                 entity.Property(e => e.DescriptionCTour)
+                    .IsRequired()
                     .HasMaxLength(500)
                     .IsUnicode(false)
                     .HasColumnName("DescriptionC_Tour");
 
+                entity.Property(e => e.HandicraftsTheme)
+                    .IsRequired()
+                    .HasMaxLength(300)
+                    .IsUnicode(false)
+                    .HasColumnName("Handicrafts_Theme");
+
                 entity.Property(e => e.MeetingPoint)
+                    .IsRequired()
                     .HasMaxLength(500)
                     .IsUnicode(false);
 
+                entity.Property(e => e.MunicipalityOne)
+                    .IsRequired()
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.MunicipalityThree)
+                    .IsRequired()
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.MunicipalityTwo)
+                    .IsRequired()
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.NameCTour)
+                    .IsRequired()
                     .HasMaxLength(500)
                     .IsUnicode(false)
                     .HasColumnName("NameC_Tour");
-
-                entity.HasOne(d => d.MatrialCraftNavigation)
-                    .WithMany(p => p.CraftTourMatrialCraftNavigations)
-                    .HasForeignKey(d => d.MatrialCraft)
-                    .HasConstraintName("Fk_MatrialCraft");
-
-                entity.HasOne(d => d.VisitPointOneNavigation)
-                    .WithMany(p => p.CraftTourVisitPointOneNavigations)
-                    .HasForeignKey(d => d.VisitPointOne)
-                    .HasConstraintName("FK_VisitPointOne");
-
-                entity.HasOne(d => d.VisitPointThreeNavigation)
-                    .WithMany(p => p.CraftTourVisitPointThreeNavigations)
-                    .HasForeignKey(d => d.VisitPointThree)
-                    .HasConstraintName("Fk_VisitPointThree");
-
-                entity.HasOne(d => d.VisitPointTwoNavigation)
-                    .WithMany(p => p.CraftTourVisitPointTwoNavigations)
-                    .HasForeignKey(d => d.VisitPointTwo)
-                    .HasConstraintName("FK_VisitPointTwo");
             });
 
             modelBuilder.Entity<Craftman>(entity =>
@@ -322,24 +332,27 @@ namespace Handcraft_RouteApp.Infrastructure.Data
 
             modelBuilder.Entity<Material>(entity =>
             {
+                entity.HasKey(e => e.IdMaterial)
+                    .HasName("PK_Id_material");
+
+                entity.ToTable("Material");
+
+                entity.Property(e => e.IdMaterial).HasColumnName("Id_material");
+
+                entity.Property(e => e.IdCraft).HasColumnName("Id_Craft");
+
                 entity.Property(e => e.TypeMaterial)
+                    .IsRequired()
                     .HasMaxLength(150)
                     .IsUnicode(false)
                     .HasColumnName("Type_Material");
-            });
 
-            modelBuilder.Entity<Municipality>(entity =>
-            {
-                entity.HasKey(e => e.IdMunicipality)
-                    .HasName("PK__Municipa__1BFD284402297AA5");
-
-                entity.ToTable("Municipality");
-
-                entity.Property(e => e.NameMunicp)
-                    .IsRequired()
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("Name_Municp");
+                entity.HasOne(d => d.IdCraftNavigation)
+                    //.WithMany(p => p.Materials)
+                    //.HasForeignKey(d => d.IdCraft)
+                    .WithOne(p => p.Material)
+                    .HasForeignKey<Material>(d => d.IdCraft)
+                    .HasConstraintName("FK_Id_Craft");
             });
 
             modelBuilder.Entity<Rol>(entity =>
@@ -360,7 +373,8 @@ namespace Handcraft_RouteApp.Infrastructure.Data
 
             modelBuilder.Entity<SocialNetwork>(entity =>
             {
-                entity.HasKey(e => e.IdSocialNetworks);
+                entity.HasKey(e => e.IdSocialNetworks)
+                    .HasName("PK__Social_N__BE22922F6EED6700");
 
                 entity.ToTable("Social_Networks");
 
@@ -375,7 +389,7 @@ namespace Handcraft_RouteApp.Infrastructure.Data
                     //.WithMany(p => p.SocialNetworks)
                     //.HasForeignKey(d => d.IdCraftman)
                     .WithOne(p => p.SocialNetwork)
-                    .HasForeignKey<SocialNetwork>( d => d.IdCraftman)
+                    .HasForeignKey<SocialNetwork>(d => d.IdCraftman)
                     .HasConstraintName("FK_Social_Networks_Craftman");
             });
 

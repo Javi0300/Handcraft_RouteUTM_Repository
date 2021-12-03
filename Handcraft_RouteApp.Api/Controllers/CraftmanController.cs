@@ -70,8 +70,8 @@ namespace Handcraft_RouteApp.Api.Controllers
                 Email : craftmans.Email,
 
                 Age : craftmans.age,
-                
-                City : craftmans.Address == null ? string.Empty : craftmans.Address.City
+
+                Municipality : craftmans.Address == null ? string.Empty : craftmans.Address.Municipality
                 
             );
             return dtos;
@@ -94,8 +94,6 @@ namespace Handcraft_RouteApp.Api.Controllers
 
                 Birthday = dto.Birthday.Date,
 
-                Municipality = 0,
-
                 Address = new Address
                 {
                     Street = string.Empty,
@@ -104,7 +102,7 @@ namespace Handcraft_RouteApp.Api.Controllers
 
                     ZipCode = string.Empty,
 
-                    City = string.Empty
+                    Municipality = string.Empty
                 },
     
                 Telephone = string.Empty,

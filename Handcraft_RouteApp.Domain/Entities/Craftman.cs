@@ -28,7 +28,6 @@ namespace Handcraft_RouteApp.Domain.Entities
                 return age;
             }
         }
-        public int Municipality { get; set; }
         public string Telephone { get; set; }
         public string Email { get; set; }
         public string Logo { get; set; }
@@ -36,8 +35,10 @@ namespace Handcraft_RouteApp.Domain.Entities
         //public virtual ICollection<Address> Addresses { get; set; }
         //public virtual ICollection<Association> Associations { get; set; }
         //public virtual ICollection<SocialNetwork> SocialNetworks { get; set; }
-        public virtual Address Address{get;set; }
-        public virtual Association Association{get;set; }
-        public virtual SocialNetwork SocialNetwork{get;set; }
+
+        public virtual Address Address{get; set;}
+        public virtual Association Association{get; set;}
+        public virtual SocialNetwork SocialNetwork{get;set;}
+
     }
 }
