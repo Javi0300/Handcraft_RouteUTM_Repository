@@ -59,5 +59,39 @@ namespace Handcraft_RouteApp.Infrastructure.Repositories
 
         
         }
+        
+        public async Task<bool> Update(int id, Craftman craftman)
+        {
+            if(id <= 0 || craftman == null)
+                throw new ArgumentException("Falta información para continuar con el proceso de modificación...");
+
+            var entity = await GetById(id);
+
+            entity.FirstName = craftman.FirstName;
+            entity.LastName = craftman.LastName;
+            entity.Age = craftman.Age;
+            entity.Email = craftman.Email;
+            entity.Gender = craftman.Gender;
+            entity.Logo = percraftmanson.Logo;
+
+            if(person.Address != null)
+            {
+                if(entity.Address == null)
+                    entity.Address = new Address();
+
+               //entity.Address.City = craftman.Address.City;
+                entity.Address.Number = craftman.Address.Number;
+                entity.Address.Street = craftman.Address.Street;
+                entity.Address.ZipCode = craftman.Address.ZipCode;
+            }
+            else if(entity.Address != null) 
+                _context.Remove(entity.Address);
+
+            _context.Update(entity);
+
+            var rows = await _context.SaveChangesAsync();
+            return rows > 0;
+        }
+        
     }
 }
