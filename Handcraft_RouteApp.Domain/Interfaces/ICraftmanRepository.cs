@@ -15,7 +15,7 @@ namespace Handcraft_RouteApp.Domain.Interfaces
 
         Task<Craftman> GetByGender(char gender);
 
-        
+        Task<bool> Update(Craftman craftman);
         
         Task<int> Create(Craftman craftman);
 
