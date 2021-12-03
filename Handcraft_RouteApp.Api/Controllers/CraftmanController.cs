@@ -51,7 +51,13 @@ namespace Handcraft_RouteApp.Api.Controllers
         [Route("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
-            
+            var craftman = await _repository.GetById(id);
+
+            if(craftman == null)
+                return NotFound($"No fue posible encontrar resultados con el id {id}...");
+
+            var respuesta = _mapper.Map<Craftman, CraftmanResponse>(craftman);
+            return Ok(respuesta);
         }
 
         [HttpGet]
