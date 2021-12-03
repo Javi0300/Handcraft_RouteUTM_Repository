@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -39,7 +40,7 @@ namespace Handcraft_RouteApp.Api
             services.AddDbContext<HandCraftRouteContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("HandCraftRoute")));
             services.AddTransient<ICraftmanRepository, CraftmanSqlRepository>();
-            
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -20,8 +20,8 @@ namespace Handcraft_RouteApp.Infrastructure.Repositories
 
         public async Task<IQueryable<Craftman>> GetAll()
         {
-            var artesain = await _context.Craftmen.ToListAsync();
-            return artesain.AsQueryable().AsNoTracking();
+             var artesain = await _context.Craftmen.AsQueryable<Craftman>().AsNoTracking().ToListAsync();
+            return artesain.AsQueryable();
         }
 
 
@@ -39,21 +39,25 @@ namespace Handcraft_RouteApp.Infrastructure.Repositories
             return artesain;
         }
 
-        public bool Create(Craftman craftman)
+        public async Task<Craftman> GetById(int id)
         {
-            _context.Add(craftman);
-            var id = _context.SaveChanges();
-            return id > 0;
+            var artesain = await _context.Craftmen.Include(ct => ct.Address).Include(a => a.Association).Include(s => s.SocialNetwork).FirstOrDefaultAsync(ct => ct.IdCraftman == id);
+            return artesain;
         }
 
-        Task<IQueryable<Craftman>> ICraftmanRepository.GetByName(string firstName)
+        public async Task<int> Create(Craftman craftman)
         {
-            throw new NotImplementedException();
-        }
+            var entity = craftman;
+            await _context.AddAsync(entity);
+            var rows = await _context.SaveChangesAsync();
 
-        Task<IQueryable<Craftman>> ICraftmanRepository.GetByGender(char gender)
-        {
-            throw new NotImplementedException();
+            if(rows <= 0)
+            {
+                throw new Exception("¡ERROR!: No se pudo registrar al artesano correctamente...");
+            }
+            return entity.IdCraftman;
+
+        
         }
     }
 }

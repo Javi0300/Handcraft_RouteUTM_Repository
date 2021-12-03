@@ -11,9 +11,13 @@ namespace Handcraft_RouteApp.Domain.Interfaces
     {
         Task<IQueryable<Craftman>> GetAll();
 
-        Task<IQueryable<Craftman>> GetByName(string firstName);
+        Task<Craftman> GetByName(string firstName);
 
-        Task<IQueryable<Craftman>> GetByGender(char gender);
+        Task<Craftman> GetByGender(char gender);
+
+        
+        
+        Task<int> Create(Craftman craftman);
 
     }    
 }

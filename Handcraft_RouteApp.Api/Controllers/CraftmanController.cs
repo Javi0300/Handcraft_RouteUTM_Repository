@@ -9,6 +9,7 @@ using System.Net.WebSockets;
 using System.IO.Compression;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using System.Security.AccessControl;
@@ -18,6 +19,7 @@ using Handcraft_RouteApp.Domain.Entities;
 using Handcraft_RouteApp.Domain.Interfaces;
 using Handcraft_RouteApp.Infrastructure.Repositories;
 
+
 namespace Handcraft_RouteApp.Api.Controllers
 {
 
@@ -25,12 +27,16 @@ namespace Handcraft_RouteApp.Api.Controllers
     [Route("api/[controller]")]
     public class CraftmanController : ControllerBase
     {
+        private readonly IHttpContextAccessor _httpContext;
         private readonly ICraftmanRepository _repository;
 
-        public CraftmanController(ICraftmanRepository repository)
+        public CraftmanController(IHttpContextAccessor httpContext, ICraftmanRepository repository)
         {
+            this._httpContext = httpContext;
             _repository = repository;
         }
+
+        #region "Peticiones GET"
 
         [HttpGet]
         [Route("All")]
@@ -42,7 +48,14 @@ namespace Handcraft_RouteApp.Api.Controllers
         } 
 
         [HttpGet]
-        [Route("Name/{firstName}")]
+        [Route("{id:int}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            
+        }
+
+        [HttpGet]
+        [Route("ByFirstName/{firstName}")]
         public async Task<IActionResult> GetByName(string firstName)
         {
             var craftmans = await _repository.GetByName(firstName);
@@ -50,11 +63,29 @@ namespace Handcraft_RouteApp.Api.Controllers
         }
 
         [HttpGet]
-        [Route("gender/{gender}")]
+        [Route("ByGender/{gender}")]
         public async Task<IActionResult> GetByGender(char gender)
         {
             var craftmans = await _repository.GetByGender(gender);
             return Ok(craftmans);
+        }
+
+        #endregion
+
+        [HttpPost]
+        [Route("Create")]
+        public async Task<IActionResult> Create([FromBody]Craftman craftman)
+        {
+            var id = await _repository.Create(craftman);
+
+            if(id <= 0)
+            {
+                return Conflict("¡ERROR!: No se pudo procesar el registro...Verifique la información ingresada.");
+            }
+
+            var urlResult = $"https://{_httpContext.HttpContext.Request.Host.Value}/api/Craftman/{id}";
+
+            return Created(urlResult, id);
         }
 
         #region"Response"
